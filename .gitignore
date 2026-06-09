@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+.npm
+
+# Build output
+dist/
+build/
+
+# Environment files — NEVER commit real credentials
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+
+# TypeORM migrations temp
+*.js.map
+
+.env.docker

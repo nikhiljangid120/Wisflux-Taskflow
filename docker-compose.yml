@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: taskflow
+      POSTGRES_PASSWORD: taskflow
+      POSTGRES_DB: taskflow_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U taskflow -d taskflow_db']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Redis ───────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ── NestJS app ──────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      target: production
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      # These override any values from .env.docker for Docker-internal networking.
+      # "postgres" and "redis" are the service names above — Docker's DNS resolves them.
+      DB_HOST: postgres
+      DB_PORT: '5432'
+      REDIS_HOST: redis
+      REDIS_PORT: '6379'
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  pg_data:
