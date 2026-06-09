@@ -28,7 +28,7 @@ export class WorkspaceMemberGuard implements CanActivate {
     const userId: string | undefined = req.user?.id;
     if (!userId) throw new ForbiddenException('Not authenticated');
 
-    const workspaceId = req.params?.workspaceId;
+    const workspaceId = req.params?.workspaceId as string;
     if (!workspaceId) {
       throw new NotFoundException('No workspaceId in route');
     }
