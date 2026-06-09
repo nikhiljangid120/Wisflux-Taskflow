@@ -14,7 +14,10 @@ import {
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WorkspaceMemberGuard } from 'src/projects/guards/workspace-member.guard';
-import { CurrentUser, type AuthUser } from '../auth/decorators/current-user.decorator';
+import {
+  CurrentUser,
+  type AuthUser,
+} from '../auth/decorators/current-user.decorator';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -22,7 +25,9 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 @ApiTags('Comments')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, WorkspaceMemberGuard)
-@Controller('workspaces/:workspaceId/projects/:projectId/tasks/:taskId/comments')
+@Controller(
+  'workspaces/:workspaceId/projects/:projectId/tasks/:taskId/comments',
+)
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 

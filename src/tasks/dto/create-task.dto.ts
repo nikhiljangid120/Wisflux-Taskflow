@@ -13,7 +13,11 @@ import { TaskStatus } from '../task-status.enum';
 import { TaskPriority } from '../task-priority.enum';
 
 export class CreateTaskDto {
-  @ApiProperty({ example: 'Wire up the new auth flow', minLength: 1, maxLength: 200 })
+  @ApiProperty({
+    example: 'Wire up the new auth flow',
+    minLength: 1,
+    maxLength: 200,
+  })
   @IsString()
   @MinLength(1)
   @MaxLength(200)

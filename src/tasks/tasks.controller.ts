@@ -15,7 +15,10 @@ import {
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WorkspaceMemberGuard } from 'src/projects/guards/workspace-member.guard';
-import { CurrentUser, type AuthUser } from '../auth/decorators/current-user.decorator';
+import {
+  CurrentUser,
+  type AuthUser,
+} from '../auth/decorators/current-user.decorator';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -75,10 +78,10 @@ export class TasksController {
   }
 
   @Get(':id/subtree')
-getSubtree(
-  @Param('projectId', ParseUUIDPipe) projectId: string,
-  @Param('id', ParseUUIDPipe) id: string,
-) {
-  return this.tasksService.getSubtree(projectId, id);
-}
+  getSubtree(
+    @Param('projectId', ParseUUIDPipe) projectId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.tasksService.getSubtree(projectId, id);
+  }
 }

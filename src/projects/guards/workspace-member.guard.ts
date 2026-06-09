@@ -19,7 +19,12 @@ export class WorkspaceMemberGuard implements CanActivate {
   constructor(private readonly workspacesService: WorkspacesService) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
-    const req = ctx.switchToHttp().getRequest();
+    const req = ctx.switchToHttp().getRequest<
+      import('express').Request & {
+        user?: { id: string };
+        workspaceMembership?: unknown;
+      }
+    >();
     const userId: string | undefined = req.user?.id;
     if (!userId) throw new ForbiddenException('Not authenticated');
 
@@ -28,7 +33,10 @@ export class WorkspaceMemberGuard implements CanActivate {
       throw new NotFoundException('No workspaceId in route');
     }
 
-    const membership = await this.workspacesService.getMembership(workspaceId, userId);
+    const membership = await this.workspacesService.getMembership(
+      workspaceId,
+      userId,
+    );
     if (!membership) {
       throw new ForbiddenException('Not a member of this workspace');
     }

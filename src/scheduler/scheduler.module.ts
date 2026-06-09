@@ -6,10 +6,7 @@ import { QueuesModule } from '../queues/queues.module';
 import { TaskSchedulerService } from './task-scheduler.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Task]),
-    QueuesModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Task]), QueuesModule],
   providers: [TaskSchedulerService],
 })
 export class SchedulerModule {}

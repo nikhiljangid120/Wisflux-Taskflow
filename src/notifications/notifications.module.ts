@@ -12,7 +12,7 @@ import { GatewayModule } from 'src/gateway/gateway.module';
   imports: [
     TypeOrmModule.forFeature([Notification]),
     QueuesModule,
-    GatewayModule
+    GatewayModule,
   ],
   controllers: [NotificationsController],
   providers: [NotificationsService, NotificationsProcessor],

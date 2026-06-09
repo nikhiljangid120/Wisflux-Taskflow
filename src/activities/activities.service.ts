@@ -37,7 +37,12 @@ export class ActivitiesService {
     workspaceId: string,
     page = 1,
     pageSize = 50,
-  ): Promise<{ data: Activity[]; total: number; page: number; pageSize: number }> {
+  ): Promise<{
+    data: Activity[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
     const [data, total] = await this.activityRepo.findAndCount({
       where: { workspaceId },
       relations: { actor: true },

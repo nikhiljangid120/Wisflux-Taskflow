@@ -8,7 +8,11 @@ export class AddMemberDto {
   @IsEmail()
   email!: string;
 
-  @ApiProperty({ enum: WorkspaceRole, example: WorkspaceRole.MEMBER, required: false })
+  @ApiProperty({
+    enum: WorkspaceRole,
+    example: WorkspaceRole.MEMBER,
+    required: false,
+  })
   @IsOptional()
   @IsEnum(WorkspaceRole)
   role?: WorkspaceRole = WorkspaceRole.MEMBER;

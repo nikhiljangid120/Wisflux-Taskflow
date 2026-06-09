@@ -4,7 +4,6 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,11 +15,17 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { ListTasksQueryDto } from './dto/list-tasks-query.dto';
 import { TaskStatus } from './task-status.enum';
 import { ActivitiesService } from '../activities/activities.service';
-import { ActivityType, ActivityEntityType } from '../activities/activity-type.enum';
+import {
+  ActivityType,
+  ActivityEntityType,
+} from '../activities/activity-type.enum';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { QUEUE_NOTIFICATIONS } from '../queues/queues.constants';
-import { type TaskAssignedPayload, type StatusChangedPayload } from '../queues/job-payloads';
+import {
+  type TaskAssignedPayload,
+  type StatusChangedPayload,
+} from '../queues/job-payloads';
 
 export interface PaginatedTasks {
   data: Task[];
@@ -44,9 +49,10 @@ export class TasksService {
   ) {}
 
   // Returns the depth of `taskId` (root = 0). Throws if path > MAX.
-private async getDepth(taskId: string): Promise<number> {
-  const result = await this.taskRepo.query(
-    `
+  private async getDepth(taskId: string): Promise<number> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const result = await this.taskRepo.query(
+      `
     WITH RECURSIVE ancestors AS (
       SELECT id, "parentTaskId", 0 AS depth
       FROM tasks WHERE id = $1
@@ -58,18 +64,20 @@ private async getDepth(taskId: string): Promise<number> {
     )
     SELECT MAX(depth) AS depth FROM ancestors;
     `,
-    [taskId, MAX_SUBTASK_DEPTH + 5],
-  );
-  return Number(result[0]?.depth ?? 0);
-}
+      [taskId, MAX_SUBTASK_DEPTH + 5],
+    );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    return Number(result[0]?.depth ?? 0);
+  }
 
-// Returns true if `candidateAncestorId` is an ancestor (or self) of `taskId`.
-private async isAncestor(
-  candidateAncestorId: string,
-  taskId: string,
-): Promise<boolean> {
-  const result = await this.taskRepo.query(
-    `
+  // Returns true if `candidateAncestorId` is an ancestor (or self) of `taskId`.
+  private async isAncestor(
+    candidateAncestorId: string,
+    taskId: string,
+  ): Promise<boolean> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const result = await this.taskRepo.query(
+      `
     WITH RECURSIVE ancestors AS (
       SELECT id, "parentTaskId"
       FROM tasks WHERE id = $1
@@ -80,21 +88,23 @@ private async isAncestor(
     )
     SELECT 1 FROM ancestors WHERE id = $2 LIMIT 1;
     `,
-    [taskId, candidateAncestorId],
-  );
-  return result.length > 0;
-}
+      [taskId, candidateAncestorId],
+    );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    return result.length > 0;
+  }
 
-// Fetch the full subtree rooted at `taskId` as a flat list of tasks with depth.
-async getSubtree(
-  projectId: string,
-  taskId: string,
-): Promise<Array<Task & { depth: number }>> {
-  // Confirm the root exists in this project
-  await this.findById(projectId, taskId);
+  // Fetch the full subtree rooted at `taskId` as a flat list of tasks with depth.
+  async getSubtree(
+    projectId: string,
+    taskId: string,
+  ): Promise<Array<Task & { depth: number }>> {
+    // Confirm the root exists in this project
+    await this.findById(projectId, taskId);
 
-  const result = await this.taskRepo.query(
-    `
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const result = await this.taskRepo.query(
+      `
     WITH RECURSIVE tree AS (
       SELECT *, 0 AS depth
       FROM tasks WHERE id = $1
@@ -106,10 +116,11 @@ async getSubtree(
     )
     SELECT * FROM tree ORDER BY depth ASC, "createdAt" ASC;
     `,
-    [taskId, MAX_SUBTASK_DEPTH + 1],
-  );
-  return result;
-}
+      [taskId, MAX_SUBTASK_DEPTH + 1],
+    );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return result;
+  }
 
   async create(
     workspaceId: string,
@@ -134,20 +145,20 @@ async getSubtree(
     }
 
     // If parentTaskId given, confirm it's in the same project AND depth limit OK.
-if (dto.parentTaskId) {
-  const parent = await this.taskRepo.findOne({
-    where: { id: dto.parentTaskId, projectId },
-  });
-  if (!parent) {
-    throw new BadRequestException('Parent task not found in this project');
-  }
-  const parentDepth = await this.getDepth(dto.parentTaskId);
-  if (parentDepth >= MAX_SUBTASK_DEPTH) {
-    throw new BadRequestException(
-      `Subtasks cannot be nested deeper than ${MAX_SUBTASK_DEPTH} levels`,
-    );
-  }
-}
+    if (dto.parentTaskId) {
+      const parent = await this.taskRepo.findOne({
+        where: { id: dto.parentTaskId, projectId },
+      });
+      if (!parent) {
+        throw new BadRequestException('Parent task not found in this project');
+      }
+      const parentDepth = await this.getDepth(dto.parentTaskId);
+      if (parentDepth >= MAX_SUBTASK_DEPTH) {
+        throw new BadRequestException(
+          `Subtasks cannot be nested deeper than ${MAX_SUBTASK_DEPTH} levels`,
+        );
+      }
+    }
 
     const task = this.taskRepo.create({
       projectId,
@@ -188,11 +199,14 @@ if (dto.parentTaskId) {
       // Only top-level tasks by default — subtasks are fetched via the tree endpoint
       .andWhere('t.parentTaskId IS NULL');
 
-    if (query.status) qb.andWhere('t.status = :status', { status: query.status });
+    if (query.status)
+      qb.andWhere('t.status = :status', { status: query.status });
     if (query.priority)
       qb.andWhere('t.priority = :priority', { priority: query.priority });
     if (query.assigneeId)
-      qb.andWhere('t.assigneeId = :assigneeId', { assigneeId: query.assigneeId });
+      qb.andWhere('t.assigneeId = :assigneeId', {
+        assigneeId: query.assigneeId,
+      });
     if (query.search) {
       qb.andWhere('t.title ILIKE :search', { search: `%${query.search}%` });
     }
@@ -247,11 +261,15 @@ if (dto.parentTaskId) {
           where: { id: dto.parentTaskId, projectId },
         });
         if (!parent) {
-          throw new BadRequestException('Parent task not found in this project');
+          throw new BadRequestException(
+            'Parent task not found in this project',
+          );
         }
         // Prevent cycles: the new parent cannot be a descendant of this task.
         if (await this.isAncestor(id, dto.parentTaskId)) {
-          throw new BadRequestException('Cannot move a task under its own descendant');
+          throw new BadRequestException(
+            'Cannot move a task under its own descendant',
+          );
         }
         const parentDepth = await this.getDepth(dto.parentTaskId);
         if (parentDepth >= MAX_SUBTASK_DEPTH) {
@@ -264,7 +282,8 @@ if (dto.parentTaskId) {
     }
 
     if (dto.title !== undefined) task.title = dto.title;
-    if (dto.description !== undefined) task.description = dto.description ?? null;
+    if (dto.description !== undefined)
+      task.description = dto.description ?? null;
     if (dto.priority !== undefined) task.priority = dto.priority;
     if (dto.dueAt !== undefined) {
       task.dueAt = dto.dueAt ? new Date(dto.dueAt) : null;
@@ -278,7 +297,10 @@ if (dto.parentTaskId) {
     const saved = await this.taskRepo.save(task);
 
     // Build and emit activity events
-    const events: Array<{ type: ActivityType; payload: Record<string, any> }> = [];
+    const events: Array<{
+      type: ActivityType;
+      payload: Record<string, unknown>;
+    }> = [];
 
     if (dto.status !== undefined && dto.status !== prevStatus) {
       events.push({
@@ -297,9 +319,11 @@ if (dto.parentTaskId) {
     }
     if (
       events.length === 0 &&
-      (dto.title !== undefined || dto.description !== undefined ||
-       dto.priority !== undefined || dto.dueAt !== undefined ||
-       dto.parentTaskId !== undefined)
+      (dto.title !== undefined ||
+        dto.description !== undefined ||
+        dto.priority !== undefined ||
+        dto.dueAt !== undefined ||
+        dto.parentTaskId !== undefined)
     ) {
       events.push({ type: ActivityType.TASK_UPDATED, payload: {} });
     }
@@ -316,7 +340,11 @@ if (dto.parentTaskId) {
     }
 
     // Queue notifications if assignee changed and is not null
-    if (dto.assigneeId !== undefined && dto.assigneeId !== prevAssigneeId && dto.assigneeId) {
+    if (
+      dto.assigneeId !== undefined &&
+      dto.assigneeId !== prevAssigneeId &&
+      dto.assigneeId
+    ) {
       const payload: TaskAssignedPayload = {
         taskId: task.id,
         taskTitle: task.title,
@@ -329,7 +357,11 @@ if (dto.parentTaskId) {
     }
 
     // Queue notifications if status changed and there is an assignee
-    if (dto.status !== undefined && dto.status !== prevStatus && task.assigneeId) {
+    if (
+      dto.status !== undefined &&
+      dto.status !== prevStatus &&
+      task.assigneeId
+    ) {
       const payload: StatusChangedPayload = {
         taskId: task.id,
         taskTitle: task.title,

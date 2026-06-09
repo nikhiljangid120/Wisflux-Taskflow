@@ -1,5 +1,12 @@
 // src/auth/auth.controller.ts
-import { Body, Controller, Headers, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Headers,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -29,7 +36,10 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Exchange a refresh token for a new token pair' })
   @ApiResponse({ status: 200, description: 'New tokens issued' })
-  @ApiResponse({ status: 401, description: 'Refresh token invalid, expired, or revoked' })
+  @ApiResponse({
+    status: 401,
+    description: 'Refresh token invalid, expired, or revoked',
+  })
   refresh(@Body() dto: RefreshDto, @Headers('user-agent') ua?: string) {
     return this.authService.refresh(dto.refreshToken, ua);
   }

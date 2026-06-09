@@ -10,7 +10,7 @@ import { UserRole } from './user-enum.role';
 
 @ApiTags('Users')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)  // applied to ALL routes in this controller
+@UseGuards(JwtAuthGuard, RolesGuard) // applied to ALL routes in this controller
 @Controller('users')
 export class UsersController {
   @Get('me')
@@ -24,4 +24,4 @@ export class UsersController {
   adminOnly() {
     return { message: 'You see this only if you are ADMIN' };
   }
-}
+}

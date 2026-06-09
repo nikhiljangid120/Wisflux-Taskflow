@@ -48,9 +48,13 @@ export class AuthService {
     return this.issueAuthResponse(user, userAgent);
   }
 
-  async refresh(rawRefreshToken: string, userAgent?: string): Promise<TokenPair> {
+  async refresh(
+    rawRefreshToken: string,
+    userAgent?: string,
+  ): Promise<TokenPair> {
     const stored = await this.refreshTokens.findValid(rawRefreshToken);
-    if (!stored) throw new UnauthorizedException('Invalid or expired refresh token');
+    if (!stored)
+      throw new UnauthorizedException('Invalid or expired refresh token');
 
     // Rotate: revoke old, issue new
     await this.refreshTokens.revoke(stored.id);
@@ -71,18 +75,28 @@ export class AuthService {
     await this.refreshTokens.revokeAllForUser(userId);
   }
 
-  private async issueAuthResponse(user: User, userAgent?: string): Promise<AuthResponse> {
+  private async issueAuthResponse(
+    user: User,
+    userAgent?: string,
+  ): Promise<AuthResponse> {
     const tokens = await this.issueTokenPair(user, userAgent);
     return { user: this.sanitize(user), tokens };
   }
 
-  private async issueTokenPair(user: User, userAgent?: string): Promise<TokenPair> {
+  private async issueTokenPair(
+    user: User,
+    userAgent?: string,
+  ): Promise<TokenPair> {
     const payload = { sub: user.id, email: user.email, role: user.role };
     const accessToken = await this.jwtService.signAsync(payload);
 
     const refreshTtl = this.config.get<string>('JWT_REFRESH_EXPIRES_IN', '7d');
     const ttlMs = ms(refreshTtl as ms.StringValue);
-    const refreshToken = await this.refreshTokens.issue(user.id, ttlMs, userAgent);
+    const refreshToken = await this.refreshTokens.issue(
+      user.id,
+      ttlMs,
+      userAgent,
+    );
 
     return { accessToken, refreshToken };
   }

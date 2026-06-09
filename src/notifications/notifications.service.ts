@@ -77,7 +77,9 @@ export class NotificationsService {
 
     // Scope check: the requesting user must own this notification.
     if (notification.userId !== userId) {
-      throw new ForbiddenException('Cannot mark another user\'s notification as read');
+      throw new ForbiddenException(
+        "Cannot mark another user's notification as read",
+      );
     }
 
     notification.read = true;

@@ -1,5 +1,9 @@
 // src/users/users.service.ts
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -24,7 +28,9 @@ export class UsersService {
 
   async create(data: CreateUserData): Promise<User> {
     // Check for duplicate email (fast path; the DB will also enforce it)
-    const existing = await this.usersRepo.findOne({ where: { email: data.email } });
+    const existing = await this.usersRepo.findOne({
+      where: { email: data.email },
+    });
     if (existing) {
       throw new ConflictException('Email already registered');
     }

@@ -13,7 +13,10 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser, type AuthUser } from '../auth/decorators/current-user.decorator';
+import {
+  CurrentUser,
+  type AuthUser,
+} from '../auth/decorators/current-user.decorator';
 import { NotificationsService } from './notifications.service';
 
 @ApiTags('Notifications')
@@ -34,7 +37,12 @@ export class NotificationsController {
     @Query('unread', new DefaultValuePipe(false), ParseBoolPipe)
     unread: boolean,
   ) {
-    return this.notificationsService.findAllForUser(user.id, page, limit, unread);
+    return this.notificationsService.findAllForUser(
+      user.id,
+      page,
+      limit,
+      unread,
+    );
   }
 
   @Patch('read-all')

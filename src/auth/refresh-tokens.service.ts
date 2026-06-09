@@ -16,7 +16,11 @@ export class RefreshTokensService {
    * Generate a fresh refresh token, store its hash, return the raw token to caller.
    * Caller passes the raw token to the client and never stores it server-side.
    */
-  async issue(userId: string, ttlMs: number, userAgent?: string): Promise<string> {
+  async issue(
+    userId: string,
+    ttlMs: number,
+    userAgent?: string,
+  ): Promise<string> {
     const rawToken = randomBytes(48).toString('base64url');
     const tokenHash = this.hash(rawToken);
     const expiresAt = new Date(Date.now() + ttlMs);

@@ -28,13 +28,18 @@ export class ActivitiesController {
     @Query('page') page = 1,
     @Query('pageSize') pageSize = 50,
   ) {
-    return this.activitiesService.listForWorkspace(workspaceId, +page, +pageSize);
+    return this.activitiesService.listForWorkspace(
+      workspaceId,
+      +page,
+      +pageSize,
+    );
   }
 
   @Get('task/:taskId')
-  listForTask(
-    @Param('taskId', ParseUUIDPipe) taskId: string,
-  ) {
-    return this.activitiesService.listForEntity(ActivityEntityType.TASK, taskId);
+  listForTask(@Param('taskId', ParseUUIDPipe) taskId: string) {
+    return this.activitiesService.listForEntity(
+      ActivityEntityType.TASK,
+      taskId,
+    );
   }
 }

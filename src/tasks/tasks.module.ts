@@ -13,7 +13,9 @@ import { QueuesModule } from '../queues/queues.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Task, Project, WorkspaceMember]),
-    WorkspacesModule, ActivitiesModule, QueuesModule
+    WorkspacesModule,
+    ActivitiesModule,
+    QueuesModule,
   ],
   controllers: [TasksController],
   providers: [TasksService],

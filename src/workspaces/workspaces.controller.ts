@@ -13,7 +13,10 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser, type AuthUser } from '../auth/decorators/current-user.decorator';
+import {
+  CurrentUser,
+  type AuthUser,
+} from '../auth/decorators/current-user.decorator';
 import { WorkspacesService } from './workspaces.service';
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { AddMemberDto } from './dto/add-member.dto';
@@ -62,7 +65,12 @@ export class WorkspacesController {
     @Body() dto: UpdateMemberRoleDto,
     @CurrentUser() user: AuthUser,
   ) {
-    return this.workspacesService.updateMemberRole(id, memberId, dto.role, user.id);
+    return this.workspacesService.updateMemberRole(
+      id,
+      memberId,
+      dto.role,
+      user.id,
+    );
   }
 
   @Delete(':id/members/:memberId')

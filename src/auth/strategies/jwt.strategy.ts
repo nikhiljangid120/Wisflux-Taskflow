@@ -22,13 +22,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: config.get<string>('JWT_ACCESS_SECRET')!
+      secretOrKey: config.get<string>('JWT_ACCESS_SECRET')!,
     });
   }
 
   async validate(payload: JwtPayload) {
     // payload.sub is the user ID. Look up the user to confirm they still exist.
-    const user = await this.usersService.findById(payload.sub).catch(() => null);
+    const user = await this.usersService
+      .findById(payload.sub)
+      .catch(() => null);
     if (!user) throw new UnauthorizedException('User no longer exists');
 
     // This return value becomes request.user

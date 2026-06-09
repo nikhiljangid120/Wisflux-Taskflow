@@ -16,7 +16,11 @@ import { TaskflowGateway } from 'src/gateway/taskflow.gateway';
 /** Extract the recipient userId from whichever payload type we receive. */
 function recipientUserId(
   name: NotificationJobName,
-  data: TaskAssignedPayload | DueReminderPayload | CommentMentionPayload | StatusChangedPayload,
+  data:
+    | TaskAssignedPayload
+    | DueReminderPayload
+    | CommentMentionPayload
+    | StatusChangedPayload,
 ): string | null {
   switch (name) {
     case 'task_assigned':
@@ -39,9 +43,9 @@ export class NotificationsProcessor extends WorkerHost {
   constructor(
     private readonly notificationsService: NotificationsService,
     private readonly gateway: TaskflowGateway,
-) {
-  super();  
-}
+  ) {
+    super();
+  }
 
   async process(job: Job): Promise<void> {
     const name = job.name as NotificationJobName;

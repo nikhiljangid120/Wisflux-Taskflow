@@ -2,7 +2,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, Not, In } from 'typeorm';
+import { Repository, Between, In } from 'typeorm';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { Task } from '../tasks/task-entity';
@@ -51,7 +51,9 @@ export class TaskSchedulerService {
     // Filter to only tasks that have an assignee
     const assignedTasks = tasks.filter((t) => t.assigneeId != null);
 
-    this.logger.debug(`Found ${assignedTasks.length} due-soon task(s) with assignees`);
+    this.logger.debug(
+      `Found ${assignedTasks.length} due-soon task(s) with assignees`,
+    );
 
     // Current hour window key — used for job deduplication.
     // Format: YYYY-MM-DDTHH (e.g. "2024-01-15T14")

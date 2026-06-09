@@ -12,7 +12,7 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: '*',       // tighten this to your actual frontend origin in production
+    origin: '*', // tighten this to your actual frontend origin in production
     credentials: true,
   },
 })
@@ -38,12 +38,12 @@ export class TaskflowGateway
   handleConnection(client: Socket): void {
     const token =
       (client.handshake.auth?.token as string | undefined) ??
-      (client.handshake.headers?.authorization as string | undefined)
-        ?.replace('Bearer ', '')
-        .trim();
+      client.handshake.headers?.authorization?.replace('Bearer ', '').trim();
 
     if (!token) {
-      this.logger.warn(`Client ${client.id} connected without a token — disconnecting`);
+      this.logger.warn(
+        `Client ${client.id} connected without a token — disconnecting`,
+      );
       client.disconnect();
       return;
     }
@@ -54,6 +54,7 @@ export class TaskflowGateway
       });
 
       const userId = payload.sub;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       client.data.userId = userId;
 
       // Each user's personal room. Any server-side call to
@@ -71,6 +72,7 @@ export class TaskflowGateway
   }
 
   handleDisconnect(client: Socket): void {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const userId = client.data?.userId ?? 'unauthenticated';
     this.logger.log(`Client ${client.id} (user ${userId}) disconnected`);
   }

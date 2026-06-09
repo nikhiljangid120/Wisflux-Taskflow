@@ -12,7 +12,10 @@ import { Task } from '../tasks/task-entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ActivitiesService } from '../activities/activities.service';
-import { ActivityType, ActivityEntityType } from '../activities/activity-type.enum';
+import {
+  ActivityType,
+  ActivityEntityType,
+} from '../activities/activity-type.enum';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { QUEUE_NOTIFICATIONS } from '../queues/queues.constants';
@@ -107,7 +110,7 @@ export class CommentsService {
   async listForTask(taskId: string): Promise<Comment[]> {
     return this.commentRepo.find({
       where: { taskId },
-      relations: {author: true},
+      relations: { author: true },
       order: { createdAt: 'ASC' },
     });
   }

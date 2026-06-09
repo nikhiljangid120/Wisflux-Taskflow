@@ -9,9 +9,14 @@ export interface AuthUser {
 }
 
 export const CurrentUser = createParamDecorator(
-  (data: keyof AuthUser | undefined, ctx: ExecutionContext): AuthUser | string => {
-    const request = ctx.switchToHttp().getRequest();
-    const user = request.user as AuthUser;
+  (
+    data: keyof AuthUser | undefined,
+    ctx: ExecutionContext,
+  ): AuthUser | string => {
+    const request = ctx
+      .switchToHttp()
+      .getRequest<import('express').Request & { user: AuthUser }>();
+    const user = request.user;
     return data ? user?.[data] : user;
   },
 );

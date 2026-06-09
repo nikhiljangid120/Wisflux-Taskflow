@@ -23,10 +23,24 @@ import { Notification } from '../notifications/notification.entity';
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_DATABASE'),
-        entities: [__dirname + '/../**/*.entity{.ts,.js}', User, RefreshToken, Workspace, WorkspaceMember, Project, Task, Activity, Comment, Notification],
-        synchronize: false,           // NEVER true in any environment with real data
-        migrationsRun: false,         // we run migrations manually via CLI
-        logging: config.get('NODE_ENV') === 'development' ? ['error', 'warn'] : ['error'],
+        entities: [
+          __dirname + '/../**/*.entity{.ts,.js}',
+          User,
+          RefreshToken,
+          Workspace,
+          WorkspaceMember,
+          Project,
+          Task,
+          Activity,
+          Comment,
+          Notification,
+        ],
+        synchronize: false, // NEVER true in any environment with real data
+        migrationsRun: false, // we run migrations manually via CLI
+        logging:
+          config.get('NODE_ENV') === 'development'
+            ? ['error', 'warn']
+            : ['error'],
       }),
     }),
   ],

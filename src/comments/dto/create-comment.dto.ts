@@ -1,6 +1,12 @@
 // src/comments/dto/create-comment.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, MinLength, MaxLength, IsOptional, IsUUID } from 'class-validator';
+import {
+  IsString,
+  MinLength,
+  MaxLength,
+  IsOptional,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateCommentDto {
   @ApiProperty({ minLength: 1, maxLength: 5000 })

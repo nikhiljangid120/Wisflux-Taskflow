@@ -6,7 +6,7 @@ export interface TaskAssignedPayload {
   taskTitle: string;
   projectId: string;
   workspaceId: string;
-  assigneeId: string;   // recipient of the notification
+  assigneeId: string; // recipient of the notification
   assignedById: string; // who did the assigning
 }
 
@@ -16,8 +16,8 @@ export interface DueReminderPayload {
   taskTitle: string;
   projectId: string;
   workspaceId: string;
-  assigneeId: string;   // recipient of the notification
-  dueAt: string;        // ISO-8601 string
+  assigneeId: string; // recipient of the notification
+  dueAt: string; // ISO-8601 string
 }
 
 /** Emitted when a comment body contains @{userId}. */
@@ -28,7 +28,7 @@ export interface CommentMentionPayload {
   workspaceId: string;
   mentionedUserId: string; // recipient of the notification
   authorId: string;
-  excerpt: string;         // first 120 chars of the comment body
+  excerpt: string; // first 120 chars of the comment body
 }
 
 /** Emitted when a task's status changes. */
@@ -37,7 +37,7 @@ export interface StatusChangedPayload {
   taskTitle: string;
   projectId: string;
   workspaceId: string;
-  assigneeId: string;   // recipient — only sent if the task has an assignee
+  assigneeId: string; // recipient — only sent if the task has an assignee
   oldStatus: string;
   newStatus: string;
   changedById: string;

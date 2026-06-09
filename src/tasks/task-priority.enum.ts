@@ -1,7 +1,7 @@
 // src/tasks/task-priority.enum.ts
 export enum TaskPriority {
   LOW = 'LOW',
-  MEDIUM = 'MEDIUM',    
+  MEDIUM = 'MEDIUM',
   HIGH = 'HIGH',
   URGENT = 'URGENT',
 }

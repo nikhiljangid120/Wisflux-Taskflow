@@ -99,7 +99,9 @@ export class WorkspacesService {
 
     // Don't let anyone insert a second OWNER.
     if (membership.role === WorkspaceRole.OWNER) {
-      throw new BadRequestException('Use transfer-ownership to set a new owner');
+      throw new BadRequestException(
+        'Use transfer-ownership to set a new owner',
+      );
     }
 
     return this.memberRepo.save(membership);
@@ -108,7 +110,7 @@ export class WorkspacesService {
   async listMembers(workspaceId: string): Promise<WorkspaceMember[]> {
     return this.memberRepo.find({
       where: { workspaceId },
-      relations: {user: true},
+      relations: { user: true },
       order: { createdAt: 'ASC' },
     });
   }

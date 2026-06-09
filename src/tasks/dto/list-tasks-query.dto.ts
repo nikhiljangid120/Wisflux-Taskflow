@@ -16,18 +16,18 @@ import { TaskPriority } from '../task-priority.enum';
 export class ListTasksQueryDto {
   @ApiProperty({ required: false, enum: TaskStatus })
   @IsOptional()
-  @Transform(({ value }) => {
+  @Transform(({ value }: { value: unknown }) => {
     if (!value) return undefined;
-    return typeof value === 'string' ? value.toUpperCase() : value;
+    return typeof value === 'string' ? value.toUpperCase() : (value as unknown);
   })
   @IsEnum(TaskStatus)
   status?: TaskStatus;
 
   @ApiProperty({ required: false, enum: TaskPriority })
   @IsOptional()
-  @Transform(({ value }) => {
+  @Transform(({ value }: { value: unknown }) => {
     if (!value) return undefined;
-    return typeof value === 'string' ? value.toUpperCase() : value;
+    return typeof value === 'string' ? value.toUpperCase() : (value as unknown);
   })
   @IsEnum(TaskPriority)
   priority?: TaskPriority;
