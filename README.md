@@ -6,7 +6,6 @@ A collaborative task management platform built with NestJS, PostgreSQL, Redis, B
 ---
 
 ## Features
-
 - **Auth**: JWT access + refresh token rotation, bcrypt password hashing
 - **Workspaces**: Multi-tenant containers with OWNER / ADMIN / MEMBER roles
 - **Projects**: Scoped to workspaces
