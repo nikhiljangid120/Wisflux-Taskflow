@@ -2,7 +2,6 @@
 A collaborative task management platform built with NestJS, PostgreSQL, Redis, BullMQ, and Socket.IO. Built as part of a full-stack bootcamp across three parts.
 
 [![CI/CD](https://github.com/nikhiljangid120/Wisflux-Taskflow/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/nikhiljangid120/Wisflux-Taskflow/actions/workflows/ci-cd.yml)
-
 ---
 ## Features
 - **Auth**: JWT access + refresh token rotation, bcrypt password hashing
