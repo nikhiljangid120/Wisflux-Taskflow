@@ -2,7 +2,6 @@
 # Install ALL dependencies (including devDeps for TypeScript compiler).
 # Compile TypeScript → dist/.
 FROM node:20-alpine AS builder
-
 WORKDIR /app
 
 # Copy package files first so this layer is cached when only source changes.
