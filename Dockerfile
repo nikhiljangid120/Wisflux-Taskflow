@@ -6,7 +6,6 @@ WORKDIR /app
 
 # Copy package files first so this layer is cached when only source changes.
 COPY package*.json ./
-
 # Install all dependencies including devDependencies (needed for tsc).
 RUN npm ci
 
